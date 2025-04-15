@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import MapView from "./MapView.jsx";
 import InfoPanel from "./InfoPanel.jsx";
-import "leaflet/dist/leaflet.css";
+import "leaflet/dist/leaflet.css"; 
+import "./styles.css";
 
 function App() {
   const [coords, setCoords] = useState([10.762622, 106.660172]);
@@ -21,11 +22,11 @@ function App() {
   }, []);
 
   return (
-    <>
-      <h1 style={{ textAlign: "center" }}>🚚 Transport Location Tracker</h1>
+    <div className="container">
+      <h1 className="header">🚚 Transport Location Tracker</h1>
       <MapView coords={coords} />
       <InfoPanel lat={coords[0]} lng={coords[1]} nmea={nmea} />
-    </>
+    </div>
   );
 }
 

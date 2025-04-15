@@ -5,8 +5,8 @@ const MapView = ({ coords }) => {
   const mapRef = useRef(null);
   const markerRef = useRef(null);
 
+  // Create the map one time on mount
   useEffect(() => {
-    // Only create the map once
     if (!mapRef.current) {
       mapRef.current = L.map("map").setView(coords, 15);
 
@@ -15,17 +15,35 @@ const MapView = ({ coords }) => {
       }).addTo(mapRef.current);
 
       markerRef.current = L.marker(coords).addTo(mapRef.current);
+
+      // Fade-in effect once the map is ready
+      mapRef.current.whenReady(() => {
+        const mapElement = document.getElementById("map");
+        if (mapElement) {
+          mapElement.classList.add("loaded"); 
+        }
+      });
     }
   }, []);
 
+  // Update marker when coords change
   useEffect(() => {
-    // Only update marker if it exists
     if (markerRef.current) {
       markerRef.current.setLatLng(coords);
     }
   }, [coords]);
 
-  return <div id="map" style={{ height: "400px", width: "100%" }} />;
+  // Cleanup if MapView unmounts
+  useEffect(() => {
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+    };
+  }, []);
+
+  return <div id="map" />;
 };
 
 export default MapView;
