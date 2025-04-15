@@ -1,3 +1,5 @@
+/* src/styles.css */
+
 /* Force full-height layout */
 html, body, #root {
   margin: 0;
@@ -18,14 +20,12 @@ html, body, #root {
   position: relative;
 }
 
-/* The map must fill the container */
+/* The map fills its container */
 #map {
   width: 100%;
   height: 100%;
   border: 2px solid #ddd;
   border-radius: 8px;
-
-  /* Optional fade-in */
   opacity: 0;
   transition: opacity 0.5s ease-in-out;
 }
@@ -45,14 +45,14 @@ html, body, #root {
   flex-direction: column;
 }
 
-/* Fleet panel heading */
+/* Fleet panel title */
 .info-container h2 {
   margin-bottom: 1rem;
   font-size: 1.4rem;
   color: #2c3e50;
 }
 
-/* Card-style for each vehicle */
+/* Each vehicle card */
 .vehicle {
   background: #fff;
   padding: 1rem;
@@ -70,7 +70,7 @@ html, body, #root {
   margin-bottom: 0;
 }
 
-/* Vehicle name/title */
+/* Vehicle title */
 .vehicle-title {
   font-weight: bold;
   color: #0d6efd;
@@ -78,7 +78,7 @@ html, body, #root {
   margin-bottom: 0.5rem;
 }
 
-/* Info lines for lat, lng, nmea */
+/* Vehicle info lines */
 .vehicle-info {
   font-size: 0.95rem;
   margin: 0.2rem 0;

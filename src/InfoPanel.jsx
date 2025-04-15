@@ -1,4 +1,5 @@
 // src/InfoPanel.jsx
+
 import React from "react";
 
 const InfoPanel = ({ vehicles }) => {
