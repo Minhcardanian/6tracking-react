@@ -1,39 +1,47 @@
+// src/MapView.jsx
 import { useEffect, useRef } from "react";
 import L from "leaflet";
 
-const MapView = ({ coords }) => {
+const MapView = ({ vehicles, onMapClick }) => {
   const mapRef = useRef(null);
-  const markerRef = useRef(null);
+  const markersRef = useRef({});
 
-  // Create the map one time on mount
   useEffect(() => {
     if (!mapRef.current) {
-      mapRef.current = L.map("map").setView(coords, 15);
+      mapRef.current = L.map("map").setView([10.762622, 106.660172], 13);
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: "© OpenStreetMap contributors",
       }).addTo(mapRef.current);
 
-      markerRef.current = L.marker(coords).addTo(mapRef.current);
-
-      // Fade-in effect once the map is ready
+      // Fade-in effect on map load
       mapRef.current.whenReady(() => {
         const mapElement = document.getElementById("map");
         if (mapElement) {
-          mapElement.classList.add("loaded"); 
+          mapElement.classList.add("loaded");
         }
       });
-    }
-  }, []);
 
-  // Update marker when coords change
+      // Listen for map clicks
+      mapRef.current.on("click", (e) => {
+        const { lat, lng } = e.latlng;
+        onMapClick(lat, lng);
+      });
+    }
+  }, [onMapClick]);
+
   useEffect(() => {
-    if (markerRef.current) {
-      markerRef.current.setLatLng(coords);
-    }
-  }, [coords]);
+    if (!mapRef.current) return;
+    vehicles.forEach((vehicle) => {
+      if (!markersRef.current[vehicle.id]) {
+        markersRef.current[vehicle.id] = L.marker(vehicle.coords).addTo(mapRef.current);
+      } else {
+        markersRef.current[vehicle.id].setLatLng(vehicle.coords);
+      }
+    });
+  }, [vehicles]);
 
-  // Cleanup if MapView unmounts
+  // Cleanup if unmount
   useEffect(() => {
     return () => {
       if (mapRef.current) {

@@ -1,13 +1,30 @@
-const InfoPanel = ({ lat, lng, nmea }) => {
-    return (
-      <div className="info-panel">
-        <h3>📡 GPS Sensor Data</h3>
-        <p><strong>Lat:</strong> {lat.toFixed(5)}</p>
-        <p><strong>Lng:</strong> {lng.toFixed(5)}</p>
-        <p><strong>NMEA:</strong> {nmea}</p>
-      </div>
-    );
-  };
-  
-  export default InfoPanel;
-  
+// src/InfoPanel.jsx
+import React from "react";
+
+const InfoPanel = ({ vehicles }) => {
+  return (
+    <div className="fleet-panel">
+      <h2>Fleet Status</h2>
+      {vehicles.length === 0 ? (
+        <p>No vehicles yet. Click on the map to add one.</p>
+      ) : (
+        vehicles.map((vehicle) => (
+          <div className="vehicle" key={vehicle.id}>
+            <div className="vehicle-title">{vehicle.name}</div>
+            <div className="vehicle-info">
+              <strong>Lat:</strong> {vehicle.coords[0].toFixed(5)}
+            </div>
+            <div className="vehicle-info">
+              <strong>Lng:</strong> {vehicle.coords[1].toFixed(5)}
+            </div>
+            <div className="vehicle-info">
+              <strong>NMEA:</strong> {vehicle.nmea || "—"}
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  );
+};
+
+export default InfoPanel;
