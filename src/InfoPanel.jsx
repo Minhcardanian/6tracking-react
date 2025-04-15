@@ -19,7 +19,13 @@ const InfoPanel = ({ vehicles }) => {
               <strong>Lng:</strong> {vehicle.coords[1].toFixed(5)}
             </div>
             <div className="vehicle-info">
-              <strong>NMEA:</strong> {vehicle.nmea || "—"}
+              <strong>GGA:</strong> {vehicle.nmea.gga || "—"}
+            </div>
+            <div className="vehicle-info">
+              <strong>ZDA:</strong> {vehicle.nmea.zda || "—"}
+            </div>
+            <div className="vehicle-info">
+              <strong>GSV:</strong> {vehicle.nmea.gsv || "—"}
             </div>
           </div>
         ))

@@ -5,12 +5,13 @@ import MapView from "./MapView.jsx";
 import InfoPanel from "./InfoPanel.jsx";
 import "leaflet/dist/leaflet.css";
 import "./styles.css";
+// Import the NMEA utility functions
+import { generateNMEA } from "./nmeaUtils.js";
 
 function App() {
   const [vehicles, setVehicles] = useState([]);
   const nextVehicleId = useRef(1);
 
-  // Add a new vehicle on map click, with an empty history.
   const addVehicle = (lat, lng) => {
     const vehicleNumber = nextVehicleId.current;
     nextVehicleId.current += 1;
@@ -18,33 +19,41 @@ function App() {
       id: vehicleNumber,
       name: `Vehicle ${vehicleNumber}`,
       coords: [lat, lng],
-      nmea: "",
-      history: []  // Store a trail of previous coordinates (optional)
+      nmea: { gga: "", zda: "", gsv: "" },
+      history: [],
     };
     setVehicles((prev) => [...prev, newVehicle]);
   };
 
-  // Update vehicles every 0.8s with faster movement and update their trail.
   useEffect(() => {
     const interval = setInterval(() => {
       setVehicles((prevVehicles) =>
         prevVehicles.map((v) => {
-          // Increase movement speed by generating larger offsets
           const latOffset = (Math.random() - 0.5) / 200;
           const lngOffset = (Math.random() - 0.5) / 200;
           const newLat = v.coords[0] + latOffset;
           const newLng = v.coords[1] + lngOffset;
-          const newNmea = `$GPGGA,123519,${newLat.toFixed(5)},N,${newLng.toFixed(5)},E,1,08,0.9,545.4,M,46.9,M,,*47`;
-          
-          // Update the vehicle's history by appending the previous coordinate.
-          const newHistory = [...v.history, v.coords];
-          if (newHistory.length > 10) newHistory.shift();
+
+          // Build raw GGA sentence without checksum.
+          const rawGGA = `$GPGGA,123519,${newLat.toFixed(5)},N,${newLng.toFixed(5)},E,1,08,0.9,545.4,M,46.9,M,,`;
+          const fullGGA = generateNMEA(rawGGA);
+
+          // Create raw ZDA sentence.
+          const now = new Date();
+          const pad = num => num.toString().padStart(2, "0");
+          const timeStr = `${pad(now.getUTCHours())}${pad(now.getUTCMinutes())}${pad(now.getUTCSeconds())}`;
+          const dateStr = `${pad(now.getUTCDate())},${pad(now.getUTCMonth() + 1)},${now.getUTCFullYear()}`;
+          const rawZDA = `$GPZDA,${timeStr},${dateStr},00,00`;
+          const fullZDA = generateNMEA(rawZDA);
+
+          // Create a raw GSV sentence (sample data).
+          const rawGSV = `$GPGSV,2,1,08,01,40,083,41,02,17,308,43,03,33,055,42,04,22,123,40`;
+          const fullGSV = generateNMEA(rawGSV);
 
           return {
             ...v,
             coords: [newLat, newLng],
-            nmea: newNmea,
-            history: newHistory
+            nmea: { gga: fullGGA, zda: fullZDA, gsv: fullGSV },
           };
         })
       );
