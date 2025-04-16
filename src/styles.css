@@ -39,20 +39,19 @@ html, body, #root {
   background: #f8f9fa;
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
-  /* Increased right padding to avoid scrollbar overlap */
-  padding: 1rem 2rem 1rem 1rem;
+  padding: 1rem 2rem 1rem 1rem; /* extra right padding for scrollbar */
   display: flex;
   flex-direction: column;
 }
 
-/* Fleet panel title */
+/* Heading in fleet panel */
 .info-container h2 {
   margin-bottom: 1rem;
   font-size: 1.4rem;
   color: #2c3e50;
 }
 
-/* Each vehicle card */
+/* Each vehicle card in the panel */
 .vehicle {
   background: #fff;
   padding: 1rem;
@@ -68,20 +67,18 @@ html, body, #root {
   margin-bottom: 0;
 }
 
-/* Vehicle title */
 .vehicle-title {
   font-weight: bold;
   color: #0d6efd;
   font-size: 1rem;
   margin-bottom: 0.5rem;
 }
-/* Vehicle info lines */
 .vehicle-info {
   font-size: 0.95rem;
   margin: 0.2rem 0;
 }
 
-/* FleetTable styles */
+/* Table styling (FleetTable) */
 .fleet-table {
   padding: 1rem;
   overflow-x: auto;
@@ -120,8 +117,7 @@ html, body, #root {
   margin-left: 10px;
 }
 .toggle-nmea-btn.graph-btn {
-  /* Move second button left so they don't overlap */
-  right: 110px;
+  right: 110px; /* shift second button left so they don't overlap */
 }
 .toggle-nmea-btn:hover {
   background-color: #0056b3;
@@ -138,7 +134,7 @@ html, body, #root {
   background: white;
   padding: 12px;
   border: 1px solid #ddd;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   z-index: 999;
   border-radius: 8px;
 }
@@ -146,7 +142,7 @@ html, body, #root {
 /* The Graph container (Visualize NMEA) */
 .graph-container {
   position: fixed;
-  bottom: 380px; /* Stacks above table-container */
+  bottom: 380px; /* Stacks above table-container so they don't overlap */
   right: 16px;
   left: 16px;
   max-height: 400px;
@@ -159,7 +155,12 @@ html, body, #root {
   border-radius: 8px;
 }
 
-/* Optional chart styling */
+/* spacing for multiple charts in a column */
+.graph-tabs h3 {
+  margin-top: 1rem;
+}
+
+/* optional chart container styling */
 .chart-container {
   margin-bottom: 2rem; /* space between graphs */
 }

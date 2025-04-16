@@ -15,10 +15,12 @@ const MapView = ({ vehicles, onMapClick }) => {
         attribution: "© OpenStreetMap contributors",
       }).addTo(mapRef.current);
 
+      // fade-in effect on map load
       mapRef.current.whenReady(() => {
         document.getElementById("map")?.classList.add("loaded");
       });
 
+      // click on the map => add a new vehicle
       mapRef.current.on("click", (e) => {
         const { lat, lng } = e.latlng;
         onMapClick(lat, lng);
@@ -26,6 +28,7 @@ const MapView = ({ vehicles, onMapClick }) => {
     }
   }, [onMapClick]);
 
+  // create or update markers for each vehicle
   useEffect(() => {
     if (!mapRef.current) return;
     vehicles.forEach((vehicle) => {
@@ -37,6 +40,7 @@ const MapView = ({ vehicles, onMapClick }) => {
     });
   }, [vehicles]);
 
+  // cleanup on unmount
   useEffect(() => {
     return () => {
       if (mapRef.current) {

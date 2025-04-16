@@ -29,11 +29,14 @@ function App() {
       id: vehicleNumber,
       name: `Vehicle ${vehicleNumber}`,
       coords: [lat, lng],
+      // NMEA strings for GGA, ZDA, GSV
       nmea: { gga: "", zda: "", gsv: "" },
-      history: [],
+      // We'll store altitude, sats, hdop after random generation
       altitude: 0,
       sats: 0,
       hdop: 0,
+      // If you want a route trail in future, you can store a history array
+      history: [],
     };
     setVehicles((prev) => [...prev, newVehicle]);
   };
@@ -55,7 +58,9 @@ function App() {
           const hdopVal = (Math.random() * 2).toFixed(1);      // 0.0–2.0
 
           // Build GGA with those fields
-          const rawGGA = `$GPGGA,123519,${newLat.toFixed(5)},N,${newLng.toFixed(5)},E,1,${satCount},${hdopVal},${altitude.toFixed(1)},M,46.9,M,,`;
+          const rawGGA = `$GPGGA,123519,${newLat.toFixed(5)},N,${newLng.toFixed(5)},E,1,${satCount},${hdopVal},${altitude.toFixed(
+            1
+          )},M,46.9,M,,`;
           const fullGGA = generateNMEA(rawGGA);
 
           // Build ZDA (time/date)
@@ -74,9 +79,9 @@ function App() {
             ...v,
             coords: [newLat, newLng],
             nmea: { gga: fullGGA, zda: fullZDA, gsv: fullGSV },
-            altitude,        // Store random altitude
-            sats: satCount,  // Store random sat count
-            hdop: parseFloat(hdopVal), // Store random HDOP as number
+            altitude,        // store random altitude
+            sats: satCount,  // store random sat count
+            hdop: parseFloat(hdopVal),
           };
         })
       );
@@ -87,7 +92,7 @@ function App() {
 
   return (
     <>
-      {/* Main Layout */}
+      {/* Main Layout (map on left, InfoPanel on right) */}
       <div className="content">
         <div className="map-container">
           <MapView vehicles={vehicles} onMapClick={addVehicle} />
@@ -98,29 +103,23 @@ function App() {
       </div>
 
       {/* Button to toggle NMEA Table */}
-      <button
-        className="toggle-nmea-btn"
-        onClick={() => setShowTable((prev) => !prev)}
-      >
+      <button className="toggle-nmea-btn" onClick={() => setShowTable((prev) => !prev)}>
         {showTable ? "Hide NMEA" : "Read NMEA"}
       </button>
 
       {/* Button to toggle Graphs */}
-      <button
-        className="toggle-nmea-btn graph-btn"
-        onClick={() => setShowGraphs((prev) => !prev)}
-      >
+      <button className="toggle-nmea-btn graph-btn" onClick={() => setShowGraphs((prev) => !prev)}>
         {showGraphs ? "Hide Graphs" : "Visualize NMEA"}
       </button>
 
-      {/* If showTable => Show FleetTable */}
+      {/* Show FleetTable if toggled */}
       {showTable && (
         <div className="table-container">
           <FleetTable vehicles={vehicles} />
         </div>
       )}
 
-      {/* If showGraphs => Show the charts */}
+      {/* Show Graphs if toggled */}
       {showGraphs && (
         <div className="graph-container">
           <div className="graph-tabs">
