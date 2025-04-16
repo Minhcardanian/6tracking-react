@@ -44,19 +44,22 @@ html, body, #root {
   flex-direction: column;
 }
 
-/* Heading in fleet panel */
+/* Center the Fleet Status heading */
 .info-container h2 {
   margin-bottom: 1rem;
   font-size: 1.4rem;
   color: #2c3e50;
+  text-align: center;
 }
 
 /* Each vehicle card in the panel */
 .vehicle {
   background: #fff;
   padding: 1rem;
-  margin-bottom: 1rem;
-  border-radius: 8px;
+  /* Provide negative horizontal margins for a 'tabbed' look */
+  margin: 0 -1rem 1rem -1rem;
+  border-left: 5px solid #0d6efd; /* left accent bar */
+  border-radius: 0 8px 8px 0;     /* no rounding on left, but round on other corners */
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   transition: transform 0.2s ease;
 }
@@ -117,7 +120,8 @@ html, body, #root {
   margin-left: 10px;
 }
 .toggle-nmea-btn.graph-btn {
-  right: 110px; /* shift second button left so they don't overlap */
+  /* Move second button left so they don't overlap */
+  right: 110px;
 }
 .toggle-nmea-btn:hover {
   background-color: #0056b3;
@@ -131,36 +135,36 @@ html, body, #root {
   left: 16px;
   max-height: 300px;
   overflow-y: auto;
-  background: white;
   padding: 12px;
-  border: 1px solid #ddd;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  z-index: 999;
+  border: 2px solid #ccc;
   border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+  background: #fafafa;
+  z-index: 999;
+  margin-top: 15px; /* spacing from .graph-container if both are open */
 }
 
 /* The Graph container (Visualize NMEA) */
 .graph-container {
   position: fixed;
-  bottom: 380px; /* Stacks above table-container so they don't overlap */
+  bottom: 380px; /* stacked above table container so they don't overlap */
   right: 16px;
   left: 16px;
   max-height: 400px;
   overflow-y: auto;
-  background: white;
   padding: 12px;
-  border: 1px solid #ddd;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 999;
+  border: 2px solid #ccc;
   border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+  background: #ffffff;
+  z-index: 999;
+  margin-bottom: 15px; /* spacing if you want it above the table container */
 }
 
-/* spacing for multiple charts in a column */
 .graph-tabs h3 {
   margin-top: 1rem;
 }
 
-/* optional chart container styling */
 .chart-container {
-  margin-bottom: 2rem; /* space between graphs */
+  margin-bottom: 2rem; /* spacing between multiple charts */
 }

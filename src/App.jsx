@@ -31,11 +31,10 @@ function App() {
       coords: [lat, lng],
       // NMEA strings for GGA, ZDA, GSV
       nmea: { gga: "", zda: "", gsv: "" },
-      // We'll store altitude, sats, hdop after random generation
       altitude: 0,
       sats: 0,
       hdop: 0,
-      // If you want a route trail in future, you can store a history array
+      // optional route history if needed
       history: [],
     };
     setVehicles((prev) => [...prev, newVehicle]);
@@ -53,12 +52,14 @@ function App() {
           const newLng = v.coords[1] + lngOffset;
 
           // Generate random altitude, sats, hdop
-          const altitude = 500 + Math.random() * 100;          // 500–600
-          const satCount = Math.floor(Math.random() * 5) + 7;  // 7–11
-          const hdopVal = (Math.random() * 2).toFixed(1);      // 0.0–2.0
+          const altitude = 500 + Math.random() * 100;         // 500–600
+          const satCount = Math.floor(Math.random() * 5) + 7; // 7–11
+          const hdopVal = (Math.random() * 2).toFixed(1);     // 0.0–2.0
 
           // Build GGA with those fields
-          const rawGGA = `$GPGGA,123519,${newLat.toFixed(5)},N,${newLng.toFixed(5)},E,1,${satCount},${hdopVal},${altitude.toFixed(
+          const rawGGA = `$GPGGA,123519,${newLat.toFixed(5)},N,${newLng.toFixed(
+            5
+          )},E,1,${satCount},${hdopVal},${altitude.toFixed(
             1
           )},M,46.9,M,,`;
           const fullGGA = generateNMEA(rawGGA);
@@ -66,8 +67,12 @@ function App() {
           // Build ZDA (time/date)
           const now = new Date();
           const pad = (num) => num.toString().padStart(2, "0");
-          const timeStr = `${pad(now.getUTCHours())}${pad(now.getUTCMinutes())}${pad(now.getUTCSeconds())}`;
-          const dateStr = `${pad(now.getUTCDate())},${pad(now.getUTCMonth() + 1)},${now.getUTCFullYear()}`;
+          const timeStr = `${pad(now.getUTCHours())}${pad(now.getUTCMinutes())}${pad(
+            now.getUTCSeconds()
+          )}`;
+          const dateStr = `${pad(now.getUTCDate())},${pad(
+            now.getUTCMonth() + 1
+          )},${now.getUTCFullYear()}`;
           const rawZDA = `$GPZDA,${timeStr},${dateStr},00,00`;
           const fullZDA = generateNMEA(rawZDA);
 
@@ -79,8 +84,8 @@ function App() {
             ...v,
             coords: [newLat, newLng],
             nmea: { gga: fullGGA, zda: fullZDA, gsv: fullGSV },
-            altitude,        // store random altitude
-            sats: satCount,  // store random sat count
+            altitude,       // store random altitude
+            sats: satCount, // store random sat count
             hdop: parseFloat(hdopVal),
           };
         })
@@ -92,7 +97,7 @@ function App() {
 
   return (
     <>
-      {/* Main Layout (map on left, InfoPanel on right) */}
+      {/* Main Layout */}
       <div className="content">
         <div className="map-container">
           <MapView vehicles={vehicles} onMapClick={addVehicle} />
@@ -103,23 +108,29 @@ function App() {
       </div>
 
       {/* Button to toggle NMEA Table */}
-      <button className="toggle-nmea-btn" onClick={() => setShowTable((prev) => !prev)}>
+      <button
+        className="toggle-nmea-btn"
+        onClick={() => setShowTable((prev) => !prev)}
+      >
         {showTable ? "Hide NMEA" : "Read NMEA"}
       </button>
 
       {/* Button to toggle Graphs */}
-      <button className="toggle-nmea-btn graph-btn" onClick={() => setShowGraphs((prev) => !prev)}>
+      <button
+        className="toggle-nmea-btn graph-btn"
+        onClick={() => setShowGraphs((prev) => !prev)}
+      >
         {showGraphs ? "Hide Graphs" : "Visualize NMEA"}
       </button>
 
-      {/* Show FleetTable if toggled */}
+      {/* If showTable => Show FleetTable */}
       {showTable && (
         <div className="table-container">
           <FleetTable vehicles={vehicles} />
         </div>
       )}
 
-      {/* Show Graphs if toggled */}
+      {/* If showGraphs => Show Recharts */}
       {showGraphs && (
         <div className="graph-container">
           <div className="graph-tabs">

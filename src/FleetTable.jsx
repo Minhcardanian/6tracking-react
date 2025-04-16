@@ -1,4 +1,5 @@
 // src/FleetTable.jsx
+
 import { parseGGA, parseZDA } from "./nmeaParser";
 
 export default function FleetTable({ vehicles }) {
@@ -22,11 +23,11 @@ export default function FleetTable({ vehicles }) {
         </thead>
         <tbody>
           {vehicles.map((v) => {
-            // parse GGA/ZDA to get date/time/lat/lng from the NMEA if you wish
+            // parse GGA/ZDA for date/time/lat/lng if needed
             const gga = parseGGA(v.nmea.gga);
             const zda = parseZDA(v.nmea.zda);
 
-            // random alt/sats/hdop from v
+            // random altitude/sats/hdop from v
             const alt = v.altitude?.toFixed(1) ?? "N/A";
             const sats = v.sats ?? "N/A";
             const hdop = v.hdop?.toFixed(1) ?? "N/A";
@@ -34,16 +35,10 @@ export default function FleetTable({ vehicles }) {
             return (
               <tr key={v.id}>
                 <td>{v.name}</td>
-
-                {/* from parsed ZDA */}
                 <td>{zda?.date || "N/A"}</td>
                 <td>{zda?.time || "N/A"}</td>
-
-                {/* lat/lng from parsed GGA */}
                 <td>{gga?.lat || "N/A"}</td>
                 <td>{gga?.lng || "N/A"}</td>
-
-                {/* altitude, fix, fixQuality, sats, hdop columns */}
                 <td>{alt}</td>
                 <td>{gga?.fix || "N/A"}</td>
                 <td>{gga?.quality || "N/A"}</td>
