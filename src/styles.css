@@ -52,14 +52,13 @@ html, body, #root {
   text-align: center;
 }
 
-/* Each vehicle card in the panel */
+/* Each vehicle card in the panel (negative margin 'tabbed' style) */
 .vehicle {
   background: #fff;
   padding: 1rem;
-  /* Provide negative horizontal margins for a 'tabbed' look */
   margin: 0 -1rem 1rem -1rem;
-  border-left: 5px solid #0d6efd; /* left accent bar */
-  border-radius: 0 8px 8px 0;     /* no rounding on left, but round on other corners */
+  border-left: 5px solid #0d6efd;
+  border-radius: 0 8px 8px 0;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   transition: transform 0.2s ease;
 }
@@ -103,25 +102,27 @@ html, body, #root {
   font-weight: bold;
 }
 
-/* Floating Buttons */
-.toggle-nmea-btn {
+/* Buttons container at bottom-right */
+.toggle-btn-container {
   position: fixed;
   bottom: 16px;
   right: 16px;
-  padding: 10px 16px;
+  display: flex;
+  flex-direction: row;
+  gap: 20px; /* space out the 3 buttons */
+  z-index: 1000;
+}
+
+/* Base style for toggle buttons */
+.toggle-nmea-btn {
   background-color: #007bff;
   border: none;
   border-radius: 6px;
   color: white;
   font-weight: bold;
   cursor: pointer;
-  z-index: 1000;
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-  margin-left: 10px;
-}
-.toggle-nmea-btn.graph-btn {
-  /* Move second button left so they don't overlap */
-  right: 110px;
+  padding: 10px 16px;
 }
 .toggle-nmea-btn:hover {
   background-color: #0056b3;
@@ -158,7 +159,7 @@ html, body, #root {
   box-shadow: 0 4px 14px rgba(0,0,0,0.15);
   background: #ffffff;
   z-index: 999;
-  margin-bottom: 15px; /* spacing if you want it above the table container */
+  margin-bottom: 15px; /* spacing above the table container */
 }
 
 .graph-tabs h3 {
@@ -167,4 +168,63 @@ html, body, #root {
 
 .chart-container {
   margin-bottom: 2rem; /* spacing between multiple charts */
+}
+
+/* Semi-Transparent White Docs Overlay */
+.footer-docs {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.75); /* paper-like semitransparent white */
+  color: #333;
+  backdrop-filter: blur(5px); /* optional frosted effect, modern browsers */
+  padding: 1rem 2rem;
+  z-index: 600; /* below table & graph containers (999) so those show above if toggled */
+  max-height: 300px;
+  overflow-y: auto;
+  border-top: 2px solid #bbb;
+  box-shadow: 0 -3px 10px rgba(0,0,0,0.2);
+  transition: opacity 0.4s ease;
+}
+
+/* For Full Screen Docs mode (if used) */
+.fullscreen-docs {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-height: none;
+  z-index: 2000; /* on top of table & graph overlays */
+  overflow-y: auto;
+  border-top: none; /* remove top border in full screen */
+}
+
+/* Doc overlay heading style */
+.footer-docs h3 {
+  margin-top: 0;
+}
+
+/* Link color in doc overlay */
+.footer-docs a {
+  color: #007bff;
+  text-decoration: underline;
+}
+.footer-docs a:hover {
+  color: #0056b3;
+}
+
+/* Button in doc overlay for toggling full screen */
+.footer-docs .fullscreen-toggle {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+.footer-docs .fullscreen-toggle:hover {
+  background: #0056b3;
 }
