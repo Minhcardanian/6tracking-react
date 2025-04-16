@@ -7,8 +7,10 @@ import FleetTable from "./FleetTable.jsx";
 import AltitudeGraph from "./charts/AltitudeGraph.jsx";
 import SatsGraph from "./charts/SatsGraph.jsx";
 import HDOPGraph from "./charts/HDOPGraph.jsx";
+import Mermaid from "react-mermaid2"; // for rendering Mermaid diagrams
+
 import "leaflet/dist/leaflet.css";
-import "./styles.css";
+import "./styles.css";               // main styling
 import { generateNMEA } from "./nmeaUtils.js";
 
 function App() {
@@ -18,13 +20,14 @@ function App() {
   const [showTable, setShowTable] = useState(false);
   const [showGraphs, setShowGraphs] = useState(false);
 
-  // Toggle for docs overlay + optional fullscreen
+  // Docs overlay + optional full-screen reading
   const [showDocs, setShowDocs] = useState(false);
   const [docsFullscreen, setDocsFullscreen] = useState(false);
 
+  // For adding new vehicles
   const nextVehicleId = useRef(1);
 
-  // Add vehicle upon map click
+  // Add a new vehicle when map is clicked
   const addVehicle = (lat, lng) => {
     const vehicleNumber = nextVehicleId.current;
     nextVehicleId.current += 1;
@@ -41,23 +44,23 @@ function App() {
     setVehicles((prev) => [...prev, newVehicle]);
   };
 
-  // Simulate random movement & data every 0.8s
+  // Simulate random movement & data every 0.8 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setVehicles((prevVehicles) =>
         prevVehicles.map((v) => {
-          // random lat/lng offset
+          // random lat/lng offsets
           const latOffset = (Math.random() - 0.5) / 200;
           const lngOffset = (Math.random() - 0.5) / 200;
           const newLat = v.coords[0] + latOffset;
           const newLng = v.coords[1] + lngOffset;
 
           // random altitude, satCount, hdop
-          const altitude = 500 + Math.random() * 100;
+          const altitude = 500 + Math.random() * 100; 
           const satCount = Math.floor(Math.random() * 5) + 7;
           const hdopVal = (Math.random() * 2).toFixed(1);
 
-          // Build GGA sentence
+          // Build GGA
           const rawGGA = `$GPGGA,123519,${newLat.toFixed(
             5
           )},N,${newLng.toFixed(
@@ -106,19 +109,14 @@ function App() {
         </div>
       </div>
 
-      {/* FLOATING BUTTONS IN A CONTAINER */}
+      {/* Bottom-right buttons in a flex container */}
       <div className="toggle-btn-container">
-        {/* 1) Table Toggle */}
         <button className="toggle-nmea-btn" onClick={() => setShowTable((prev) => !prev)}>
           {showTable ? "Hide NMEA" : "Read NMEA"}
         </button>
-
-        {/* 2) Graphs Toggle */}
         <button className="toggle-nmea-btn" onClick={() => setShowGraphs((prev) => !prev)}>
           {showGraphs ? "Hide Graphs" : "Visualize NMEA"}
         </button>
-
-        {/* 3) Docs Toggle */}
         <button className="toggle-nmea-btn" onClick={() => setShowDocs((prev) => !prev)}>
           {showDocs ? "Hide Info" : "How It Works"}
         </button>
@@ -145,39 +143,43 @@ function App() {
         </div>
       )}
 
-      {/* Semi-Transparent White Docs Overlay */}
+      {/* Docs Overlay (semi-transparent white) */}
       {showDocs && (
         <div className={`footer-docs ${docsFullscreen ? "fullscreen-docs" : ""}`}>
           <h3>How It Works (Technical Overview)</h3>
           <p>
-            This demo is built with <strong>React + Vite</strong> and uses <strong>Leaflet</strong> 
-            for map rendering. Every <em>0.8 seconds</em>, each vehicle’s position is updated with 
-            a small random offset to simulate movement.
+            This demo is built with <strong>React + Vite</strong> and uses{" "}
+            <strong>Leaflet</strong> for map rendering. Every <em>0.8 seconds</em>, 
+            each vehicle’s position is updated with a small random offset.
           </p>
           <ol>
             <li>
-              <strong>Random Movement:</strong>  
-              <code>App.jsx</code> uses a <code>setInterval</code> to shift lat/long for each vehicle.
+              <strong>Random Movement:</strong> 
+              <code>App.jsx</code> uses <code>setInterval</code> to shift lat/long, simulating motion.
             </li>
             <li>
               <strong>NMEA Generation:</strong>  
-              We build <code>GGA</code> (fix data), <code>ZDA</code> (date/time), 
-              and <code>GSV</code> (satellite info) with random altitude, satellites, 
-              and HDOP. Stored in the <code>vehicles</code> state.
+              We build three primary sentences:
+              <ul style={{ marginLeft: "1.5rem" }}>
+                <li><code>GGA</code> – Fix data (lat, lng, altitude, fix quality, etc.)</li>
+                <li><code>ZDA</code> – Date/time stamps (UTC-based)</li>
+                <li><code>GSV</code> – Satellites in view (simulated signals)</li>
+              </ul>
+              Random <em>altitude</em>, <em>sats</em> (sat count), and <em>HDOP</em> 
+              (horizontal dilution) are injected to vary the data.
             </li>
             <li>
-              <strong>Leaflet Map &amp; Markers:</strong>  
-              <code>MapView.jsx</code> initializes a Leaflet map, updating each vehicle’s marker 
-              position. Click the map to add new vehicles.
+              <strong>Leaflet Map &amp; Markers:</strong> 
+              <code>MapView.jsx</code> updates each vehicle’s marker. Click the map to add vehicles.
             </li>
             <li>
-              <strong>Fleet Table &amp; Charts:</strong>  
-              The “Read NMEA” button toggles the table (alt, sats, HDOP). “Visualize NMEA” shows 
-              Recharts-based graphs for altitude, satellites, and HDOP.
+              <strong>Fleet Table &amp; Charts:</strong> 
+              “Read NMEA” toggles a table (with alt, sats, HDOP), 
+              “Visualize NMEA” toggles Recharts-based graphs.
             </li>
           </ol>
           <p>
-            For more details or to view the source code, check out{" "}
+            For more details, see{" "}
             <a
               href="https://github.com/YourUser/YourRepo"
               target="_blank"
@@ -187,7 +189,18 @@ function App() {
             </a>.
           </p>
 
-          {/* Full-screen toggle */}
+          <h4>System Flow Diagram</h4>
+          <Mermaid
+            chart={`
+              flowchart LR
+                A[Random Movement in App.jsx] --> B(NMEA Generation: GGA, ZDA, GSV)
+                B --> C[Vehicles State]
+                C --> D[MapView: Leaflet Markers]
+                D --> E[Table & Chart Overlays]
+            `}
+            className="my-mermaid"
+          />
+
           <button className="fullscreen-toggle" onClick={() => setDocsFullscreen((prev) => !prev)}>
             {docsFullscreen ? "Exit Full Screen" : "Full Screen Reading"}
           </button>
