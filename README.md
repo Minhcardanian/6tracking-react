@@ -39,6 +39,43 @@ flowchart TD
 - **charts/**: `AltitudeGraph.jsx`, `SatsGraph.jsx`, `HDOPGraph.jsx` visualize metrics using Recharts.
 - **nmeaUtils.js**: Generates NMEA sentences with proper checksums.
 
+## Core Logic
+
+- **Simulation Loop (App.jsx)**: Uses a `useEffect` hook with `setInterval` (every 0.8s) to update each vehicle’s:
+  - **Coordinates** (random latitude/longitude offsets)
+  - **Metrics** (altitude, satellite count, HDOP)
+  - **NMEA sentences** (GGA, ZDA, GSV) by calling `generateNMEA(rawSentence)`
+- **NMEA Utility (`nmeaUtils.js`)**: Parses raw sentences, computes and appends a checksum suffix according to NMEA standards.
+- **Marker Management (`MapView.jsx`)**: Maintains a `markersRef` map of Leaflet markers, using `marker.setLatLng()` to smoothly animate each vehicle’s marker to new coordinates on state updates.
+- **Data Parsing (`FleetTable.jsx`)**: Utilizes `parseGGA` and `parseZDA` functions to extract latitude, longitude, altitude, fix quality, and timestamp from NMEA strings for display.
+- **UI State Toggles**: Three React state flags (`showTable`, `showGraphs`, `showDocs`) control conditional rendering of the NMEA data table, Recharts graphs, and documentation overlay.
+
+### Checksum Computation & Parsing
+
+To ensure message integrity, each NMEA sentence ends with a checksum suffix: `*HH`, where `HH` is a two-digit hexadecimal value. The checksum is computed as the bitwise XOR of all characters between `$` and `*`.
+
+```mermaid
+sequenceDiagram
+    participant App as App.jsx
+    participant Utils as nmeaUtils.js
+    participant Parser as nmeaParser.js
+    App->>Utils: generateNMEA(rawSentence)
+    Utils-->>Utils: for each char, checksum ^= charCode
+    Utils->>App: return rawSentence + '*' + checksumHex
+    FleetTable->>Parser: parseGGA(fullSentence)
+    Parser-->>FleetTable: validate checksum & extract fields
+```
+
+- **Checksum Calculation**: Iterates over each byte of the raw sentence (excluding `$`), XOR-ing their ASCII codes.
+- **Suffix Appending**: Converts the resulting byte to a two-digit hex string and appends it after `*`.
+- **Parsing & Validation**: `parseGGA` and `parseZDA` functions verify the checksum before splitting the sentence into its comma-separated fields.
+
+**Example**:
+```
+$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47
+```**: Three React state flags (`showTable`, `showGraphs`, `showDocs`) control conditional rendering of the NMEA data table, Recharts graphs, and documentation overlay.
+
+
 ## Limitations
 
 - **No Backend Integration**: Simulation and state exist purely on the client; no persistent storage.
@@ -82,6 +119,18 @@ npm run dev
 ```
 
 Open <http://localhost:5173> to view the app. Click on the map to add vehicles and toggle the overlays for tables, graphs, and documentation.
+
+---
+
+## Glossary
+
+| Term | Description |
+| --- | --- |
+| GGA | GPS Fix Data sentence (latitude, longitude, altitude, fix quality, number of satellites, HDOP). |
+| ZDA | Time & Date sentence (UTC-based timestamp and calendar date). |
+| GSV | Satellites in View sentence (details of visible satellites). |
+| NMEA | National Marine Electronics Association protocol for standard GPS sentences. |
+| HDOP | Horizontal Dilution of Precision (measure of horizontal positional accuracy). |
 
 ---
 
