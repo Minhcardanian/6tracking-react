@@ -32,44 +32,44 @@ flowchart TD
   A5 --> G[Recharts Graphs]
 ```
 
-- **App.jsx**: Orchestrates state and simulation loop.
-- **MapView.jsx**: Initializes Leaflet map, renders/upates markers, handles clicks to add vehicles.
-- **InfoPanel.jsx**: Displays each vehicle’s live coordinates and NMEA strings in a styled panel.
-- **FleetTable.jsx**: Renders a toggleable table of parsed NMEA data (GGA, ZDA, GSV) and random metrics (altitude, sats, HDOP).
-- **charts/**: Contains `AltitudeGraph.jsx`, `SatsGraph.jsx`, `HDOPGraph.jsx` for data visualization using Recharts.
-- **nmeaUtils.js**: Computes and appends NMEA checksums.
+- **App.jsx**: Orchestrates state, simulation loop, and overlay toggles.
+- **MapView.jsx**: Initializes the Leaflet map, manages a `markersRef` object to store L.marker instances, and on each state update calls `markersRef.current[id].setLatLng(newCoords)` to smoothly move existing markers; also handles adding new vehicles on map clicks.
+- **InfoPanel.jsx**: Displays vehicle coordinates and NMEA strings in a styled panel.
+- **FleetTable.jsx**: Renders parsed NMEA data (GGA, ZDA, GSV) and random metrics (altitude, sats, HDOP) in a table.
+- **charts/**: `AltitudeGraph.jsx`, `SatsGraph.jsx`, `HDOPGraph.jsx` visualize metrics using Recharts.
+- **nmeaUtils.js**: Generates NMEA sentences with proper checksums.
 
 ## Limitations
 
-- **No Backend Integration**: All data is generated and managed client-side; no server, database, or persistent storage.
-- **Static Simulation**: Location updates are random offsets, not tied to real routes or map features.
-- **No Real-Time Streaming Protocol**: Lacks WebSocket/MQTT; uses simple `setInterval` loops.
-- **No Authentication or Device Management**: Vehicles are added ad-hoc without IDs or security.
-- **Ideal Conditions Assumed**: No GPS drift, signal loss, noise filtering, or error handling beyond checksum.
+- **No Backend Integration**: Simulation and state exist purely on the client; no persistent storage.
+- **Simplified Movement**: Vehicles move by random offsets, not along actual roads.
+- **Polling vs. Streaming**: Uses `setInterval` instead of real-time protocols like WebSockets or MQTT.
+- **No Authentication or Device Registry**: Vehicles are ephemeral and have no security controls.
+- **Ideal Signal Conditions**: No handling of GPS noise, loss, or drift beyond a simulated HDOP value.
 
 ## Future Improvements
 
-- **Backend Service**: Integrate Node.js/Express or Firebase to store telemetry and history.
-- **Real GPS Input**: Use `navigator.geolocation` or mobile device GPS for live data feed.
-- **Streaming Protocols**: Replace `setInterval` with WebSocket or MQTT for realistic telemetry.
-- **Route Adherence**: Snap simulated points to real road network using a routing API.
-- **Authentication & Device Registry**: Manage vehicle identities, sessions, and access control.
-- **Error Handling & Retries**: Simulate and manage data gaps, reconnections, and invalid data scenarios.
-- **Historical Playback**: Store and replay past routes and telemetry for analysis.
-- **Geo-fencing & Alerts**: Trigger notifications when vehicles enter/exit defined zones.
-- **Mobile/Responsive UI**: Optimize for different screen sizes and touch interactions.
+- **Backend Service**: Add a server (Node.js, Firebase) to store and retrieve vehicle telemetry.
+- **Live GPS Data**: Use device geolocation (`navigator.geolocation`) or real GPS modules for true location data.
+- **Real-Time Streaming**: Replace polling with WebSocket or MQTT streams for low-latency updates.
+- **Route Adherence**: Integrate a routing API to constrain movement along actual roads.
+- **Device Management**: Implement authentication, device IDs, and role-based access control.
+- **Error Handling**: Simulate and recover from GPS signal loss, data gaps, and checksum failures.
+- **Historical Playback**: Persist and replay past telemetry for performance analysis.
+- **Geo-fencing & Alerts**: Trigger notifications when vehicles enter/exit defined areas.
+- **Responsive & Mobile UI**: Optimize the layout for various screen sizes and touch interactions.
 
 ## Getting Started
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (v16+ recommended)
+- [Node.js](https://nodejs.org/) (v16+)
 - npm or yarn
 
 ### Installation
 
 ```bash
-# Clone repository
+# Clone the repo
 git clone git@github.com:Minhcardanian/6tracking-react.git
 cd 6tracking-react
 
@@ -77,13 +77,13 @@ cd 6tracking-react
 npm install
 npm install leaflet react-mermaid2
 
-# Start development server
+# Run the dev server
 npm run dev
 ```
 
-Open <http://localhost:5173> in your browser to view the app.
+Open <http://localhost:5173> to view the app. Click on the map to add vehicles and toggle the overlays for tables, graphs, and documentation.
 
 ---
 
-For more details and source code, visit [GitHub repo](https://github.com/YourUser/YourRepo).
+For source code and contributions, see the [GitHub repository](https://github.com/YourUser/YourRepo).
 
