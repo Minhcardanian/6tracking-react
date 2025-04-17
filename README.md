@@ -70,11 +70,13 @@ sequenceDiagram
 - **Suffix Appending**: Converts the resulting byte to a two-digit hex string and appends it after `*`.
 - **Parsing & Validation**: `parseGGA` and `parseZDA` functions verify the checksum before splitting the sentence into its comma-separated fields.
 
-**Example**:
 ```
-$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47
-```**: Three React state flags (`showTable`, `showGraphs`, `showDocs`) control conditional rendering of the NMEA data table, Recharts graphs, and documentation overlay.
+## Example
 
+```shell
+$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47
+**: Three React state flags (`showTable`, `showGraphs`, `showDocs`) control conditional rendering of the NMEA data table, Recharts graphs, and documentation overlay.
+```
 
 ## Limitations
 
