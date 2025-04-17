@@ -7,17 +7,26 @@ This project is a demo application built with React and Vite that showcases real
 ```mermaid
 flowchart TD
   subgraph Frontend [React + Vite]
-    A1[App.jsx] --> A2[MapView.jsx]
-    A1 --> A3[InfoPanel.jsx]
-    A1 --> A4[FleetTable.jsx]
-    A1 --> A5[charts/**/*]
+    A1[App.jsx]
+    A2[MapView.jsx]
+    A3[InfoPanel.jsx]
+    A4[FleetTable.jsx]
+    A5[charts/*]
+    A1 --> A2
+    A1 --> A3
+    A1 --> A4
+    A1 --> A5
   end
-  subgraph Simulation Loop
-    A1 -- setInterval --> B[Random Movement & Data Generation]
-    B --> C[NMEA Generator (generateNMEA)]
-    C --> A3 & A4 & A5
+
+  subgraph SimulationLoop [Simulation Loop]
+    A1 --> B[Random Movement & Data Generation]
+    B --> C[NMEA Generator]
+    C --> A3
+    C --> A4
+    C --> A5
   end
-  A2 --> D[Leaflet Map + Markers]
+
+  A2 --> D[Leaflet Map & Markers]
   A3 --> E[Fleet Status Panel]
   A4 --> F[NMEA Data Table]
   A5 --> G[Recharts Graphs]
