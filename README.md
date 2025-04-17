@@ -1,63 +1,80 @@
 # React Fleet Tracker Demo (React + Vite)
 
-This project is a demo application built with React and Vite that showcases real-time GPS tracking of vehicles (a fleet tracker). It features:
+This project is a demo application built with React and Vite that showcases real-time GPS tracking of vehicles (a fleet tracker). It includes client-side simulation of GPS data, interactive mapping, and data visualization, mimicking a simplified server-like GPS telemetry stream.
 
-- A full-screen, two-column layout with a map on the left and a fleet status panel on the right.
-- Interactive map functionality using [Leaflet](https://leafletjs.com/):
-  - Click on the map to add a new vehicle.
-  - Markers update in real time to simulate movement.
-  - Each marker displays a simulated NMEA string along with the current latitude and longitude.
-- A responsive fleet panel that displays each vehicle’s data in a card-like layout.
-- Real-time updates that simulate the movement of vehicles (faster updates and bigger offsets).
-- Improved styling to ensure that UI elements (like panel text) are not obscured by scrollbars.
+## System Architecture
 
-## Project Structure
+```mermaid
+flowchart TD
+  subgraph Frontend [React + Vite]
+    A1[App.jsx] --> A2[MapView.jsx]
+    A1 --> A3[InfoPanel.jsx]
+    A1 --> A4[FleetTable.jsx]
+    A1 --> A5[charts/**/*]
+  end
+  subgraph Simulation Loop
+    A1 -- setInterval --> B[Random Movement & Data Generation]
+    B --> C[NMEA Generator (generateNMEA)]
+    C --> A3 & A4 & A5
+  end
+  A2 --> D[Leaflet Map + Markers]
+  A3 --> E[Fleet Status Panel]
+  A4 --> F[NMEA Data Table]
+  A5 --> G[Recharts Graphs]
+```
 
-6tracking/
-├── public/
-│   └── truck-icon.png          // (static assets, e.g. a custom truck icon, if desired)
-├── src/
-│   ├── App.jsx                 // Main component managing vehicles and layout
-│   ├── InfoPanel.jsx           // Right-side panel displaying fleet data
-│   ├── MapView.jsx             // Left-side component handling the Leaflet map and markers
-│   ├── main.jsx                // Application entry point
-│   └── styles.css              // Global CSS for layout and styling
-├── index.html                  // HTML template
-├── package.json                // Project configuration and scripts
-└── vite.config.js              // Vite configuration file
+- **App.jsx**: Orchestrates state and simulation loop.
+- **MapView.jsx**: Initializes Leaflet map, renders/upates markers, handles clicks to add vehicles.
+- **InfoPanel.jsx**: Displays each vehicle’s live coordinates and NMEA strings in a styled panel.
+- **FleetTable.jsx**: Renders a toggleable table of parsed NMEA data (GGA, ZDA, GSV) and random metrics (altitude, sats, HDOP).
+- **charts/**: Contains `AltitudeGraph.jsx`, `SatsGraph.jsx`, `HDOPGraph.jsx` for data visualization using Recharts.
+- **nmeaUtils.js**: Computes and appends NMEA checksums.
 
+## Limitations
 
-markdown
+- **No Backend Integration**: All data is generated and managed client-side; no server, database, or persistent storage.
+- **Static Simulation**: Location updates are random offsets, not tied to real routes or map features.
+- **No Real-Time Streaming Protocol**: Lacks WebSocket/MQTT; uses simple `setInterval` loops.
+- **No Authentication or Device Management**: Vehicles are added ad-hoc without IDs or security.
+- **Ideal Conditions Assumed**: No GPS drift, signal loss, noise filtering, or error handling beyond checksum.
 
-## Features
+## Future Improvements
 
-- **Interactive Map:** Click to add vehicles to the map.
-- **Real-Time GPS Simulation:** Vehicles update their positions dynamically and generate simulated NMEA data.
-- **Draggable and Responsive UI:** The map panel and fleet panel automatically update with current vehicle data.
-- **Full-Screen Layout:** A modern, responsive design that adapts to different screen sizes.
-- **Polished UI:** Improved styling ensures clear readability and an engaging user experience.
+- **Backend Service**: Integrate Node.js/Express or Firebase to store telemetry and history.
+- **Real GPS Input**: Use `navigator.geolocation` or mobile device GPS for live data feed.
+- **Streaming Protocols**: Replace `setInterval` with WebSocket or MQTT for realistic telemetry.
+- **Route Adherence**: Snap simulated points to real road network using a routing API.
+- **Authentication & Device Registry**: Manage vehicle identities, sessions, and access control.
+- **Error Handling & Retries**: Simulate and manage data gaps, reconnections, and invalid data scenarios.
+- **Historical Playback**: Store and replay past routes and telemetry for analysis.
+- **Geo-fencing & Alerts**: Trigger notifications when vehicles enter/exit defined zones.
+- **Mobile/Responsive UI**: Optimize for different screen sizes and touch interactions.
 
 ## Getting Started
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/en/) (version 16+ recommended)
-- npm (or yarn)
+- [Node.js](https://nodejs.org/) (v16+ recommended)
+- npm or yarn
 
 ### Installation
 
-1. **Clone the repository:**
+```bash
+# Clone repository
+git clone git@github.com:Minhcardanian/6tracking-react.git
+cd 6tracking-react
 
-   ```bash
-   git clone git@github.com:Minhcardanian/6tracking-react.git
-   cd 6tracking-react
-Install dependencies:
+# Install dependencies
 npm install
-npm install leaflet
-Running the Development Server
-Start the Vite dev server with:
+npm install leaflet react-mermaid2
 
+# Start development server
 npm run dev
+```
 
-Open http://localhost:5173 in your browser to view the app.
-Click on the map to add vehicles. Watch as each vehicle's data (latitude, longitude, and simulated NMEA string) updates in real time in the fleet panel on the right.
+Open <http://localhost:5173> in your browser to view the app.
+
+---
+
+For more details and source code, visit [GitHub repo](https://github.com/YourUser/YourRepo).
+

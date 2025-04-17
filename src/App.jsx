@@ -181,7 +181,7 @@ function App() {
           <p>
             For more details, see{" "}
             <a
-              href="https://github.com/YourUser/YourRepo"
+              href="https://github.com/Minhcardanian/6tracking-react"
               target="_blank"
               rel="noopener noreferrer"
             >
